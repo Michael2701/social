@@ -10,7 +10,7 @@ class Users extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->database();
-        $this->load->library('ion_auth');
+        $this->load->library(['ion_auth','session','sess']);
         $this->user = $this->ion_auth->user()->row();
         $this->user_id = $this->user->id;
 
@@ -20,6 +20,14 @@ class Users extends CI_Controller
 		if (!$logged)
 		{
 			redirect('auth/login', 'refresh');
+        }
+    }
+
+    public function test(){
+        $session = $this->db->select('id, data')->where('timestamp >', now()-300 )->get('ci_sessions')->result();
+        foreach ($session as $sess) {
+            $user_data = $this->sess->unserialize($sess->data);
+            print_r($user_data);
         }
     }
     
@@ -79,7 +87,7 @@ class Users extends CI_Controller
         $query2 .= " WHERE us.id IN ( SELECT friend_id FROM friends WHERE user_id IN ";
         $query2 .= " ( SELECT friend_id FROM friends WHERE user_id=$this->user_id ) OR user_id = $this->user_id ) ";
         $query2 .= " AND DATE(us.birthday + INTERVAL (YEAR(NOW()) - YEAR(us.birthday)) YEAR) ";        
-        $query2 .= " BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) GROUP BY us.id";
+        $query2 .= " BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) AND us.id <> $this->user_id GROUP BY us.id";
         $res = $this->db->query($query2)->result();
         echo json_encode($res);
     }

@@ -10,8 +10,7 @@
                 <p><?php echo $birthday; ?></p>
                 <ul>
                     <?php foreach($hobbies as $hobby): ?>
-                        <li data-user="<?= $hobby->user_id; ?>" 
-                            data-hobby="<?= $hobby->hobby_id; ?>">
+                        <li data-hobby="<?= $hobby->name; ?>">
                                 <?= $hobby->name; ?>
                         </li>
                     <?php endforeach; ?>

@@ -87,7 +87,7 @@ class Users extends CI_Controller
     }
 
     public function json_birthdays(){
-        $fr_ids = [];
+        $fr_ids = [$this->user_id];
         $query  = " SELECT us.id FROM users as us "; 
         $query .= " JOIN friends as fr ON us.id = fr.friend_id ";
         $query .= " WHERE fr.user_id = ".$this->user_id." ";
@@ -120,12 +120,11 @@ class Users extends CI_Controller
             $hobby_ids[] = $hb->hobby_id;
         }
         $query2  = "SELECT us.id, us.birthday, CONCAT(us.first_name,' ',us.last_name) as full_name FROM users as us ";
-        $query2 .= " JOIN user_hobbies as uh  ON us.id = uh.user_id ";
+        $query2 .= count($hobby_ids) > 0 ? " JOIN user_hobbies as uh  ON us.id = uh.user_id " : "";
         $query2 .= " WHERE us.id NOT IN (".implode(', ',$fr_ids).")"; 
         $query2 .= count($hobby_ids) > 0 ? " AND uh.hobby_id IN (".implode(', ',$hobby_ids).")" : ""; 
         $query2 .= " AND DATE(us.birthday + INTERVAL (YEAR(NOW()) - YEAR(us.birthday)) YEAR) ";
         $query2 .= " BETWEEN DATE_ADD(CURDATE(), INTERVAL -5 DAY) AND DATE_ADD(CURDATE(), INTERVAL 5 DAY) GROUP BY us.id";
-
 
         $res = $this->db->query($query2)->result();
         echo json_encode($res);
@@ -135,7 +134,7 @@ class Users extends CI_Controller
         $query  = "SELECT us.id, us.birthday, CONCAT(us.first_name,' ',us.last_name) as full_name FROM users as us ";
         $query .= " WHERE DATE(us.birthday + INTERVAL (YEAR(NOW()) - YEAR(us.birthday)) YEAR) ";
         $query .= " BETWEEN DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND DATE_FORMAT(NOW(),'%Y-12-31')"; 
-        $query .= " ORDER BY MONTH(us.birthday), DAYOFMONTH(us.birthday)";
+        $query .= " AND us.id <> $this->user_id ORDER BY MONTH(us.birthday), DAYOFMONTH(us.birthday)";
         
         $res = $this->db->query($query)->result();
         echo json_encode($res);

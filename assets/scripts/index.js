@@ -61,13 +61,45 @@ function add_friend(id){
         }
     }); 
 }
+
 $add_friend.click(function(){
     var id = $(this).data('id');
     add_friend(id);
 });
+
 $logout.click(function(){
     window.location.href = "/ci_social/auth/logout";
 });
+
+// setInterval(function(){
+//     $.ajax({
+//         type: "GET",
+//         url: "/ci_social/users/online_users",
+//         dataType: "JSON",
+//         success: function(data){
+//             var html = '';
+//             $(data).each(function(i, fr){
+//                 html += "<tr><td data-id="+fr.id+">"+fr.full_name+"</td><td>";
+//                 if(fr.is_friend){
+//                     html += "<div class='friend'><img class='img-responsive' src='./assets/img/friend.png'></div>";
+//                 }else{
+//                     html += "<button data-id="+fr.id+" class='btn btn-primary add-friend'>Add Friend</button>";
+//                 }
+//                 html += "</td></tr>";
+//             });
+//             $users_container.html(html);
+//             $all_friends.click()
+            
+//             $('.add-friend').click(function(){
+//                 var id = $(this).data('id');
+//                 add_friend(id);                
+//             })          
+//         },
+//         error: function(err){
+//             console.error(err);
+//         }
+//     });     
+// },60*5*1000);
 
 ajax_table($all_friends, $view, '/ci_social/users/json_friends');
 ajax_table($birthdays,   $view, '/ci_social/users/json_birthdays');

@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-class Sess {
+class Session_parser {
     public function unserialize($session_data) {
         $method = ini_get("session.serialize_handler");
         switch ($method) {

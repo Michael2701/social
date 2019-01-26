@@ -10,7 +10,7 @@ class Users extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->database();
-        $this->load->library(['ion_auth','session','sess']);
+        $this->load->library(['ion_auth','session']);
         $this->user = $this->ion_auth->user()->row();
         $this->user_id = $this->user->id;
 
@@ -23,12 +23,13 @@ class Users extends CI_Controller
         }
     }
 
-    public function test(){
-        $session = $this->db->select('id, data')->where('timestamp >', now()-300 )->get('ci_sessions')->result();
-        foreach ($session as $sess) {
-            $user_data = $this->sess->unserialize($sess->data);
-            print_r($user_data);
-        }
+    public function users_online(){
+        $query = " UPDATE users SET is_online = ".now()." WHERE id = $this->user_id LIMIT 1";
+        $this->db->query($query);
+        $query2  = " SELECT id, CONCAT( first_name, last_name ) as full_name FROM users ";
+        $query2 .= " WHERE id <> $this->user_id AND is_online >= ".(now()-300)." ";
+        $users = $this->db->query($query2)->result();
+        return $users;
     }
     
     public function index()
@@ -61,7 +62,7 @@ class Users extends CI_Controller
         
         if(count($friends) >= 5){
             $query2  = " DELETE FROM friends WHERE user_id = $this->user_id ";
-            $query2 .= " AND friend_id = ".$friends[0]->friend_id." ";
+            $query2 .= " AND friend_id = ".$friends[0]->friend_id." LIMIT 1";
             $this->db->query($query2);
         }
         $query3 = " INSERT INTO friends (user_id, friend_id) VALUES(".$this->user_id.", $id) ";
@@ -120,6 +121,8 @@ class Users extends CI_Controller
 
     public function mark_friends(){
         $all_users = $this->get_all_users();
+        // $all_users = $this->users_online();
+        
         $friends = $this->get_friends();
         foreach($all_users as $au){
             $is_friend = false;
@@ -131,6 +134,11 @@ class Users extends CI_Controller
             $au->is_friend = $is_friend;
         }
         return $all_users;
+    }
+
+    public function online_users(){
+        $all_users = $this->mark_friends();
+        echo json_encode($all_users);        
     }
 
 

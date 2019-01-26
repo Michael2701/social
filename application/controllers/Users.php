@@ -53,7 +53,7 @@ class Users extends CI_Controller
         $friends = $this->db->query($query)->result();
         
         if(count($friends) >= 5){
-            $query2  = " DELETE FROM friends WHERE user_id = ".$this->user_id." ";
+            $query2  = " DELETE FROM friends WHERE user_id = $this->user_id ";
             $query2 .= " AND friend_id = ".$friends[0]->friend_id." ";
             $this->db->query($query2);
         }

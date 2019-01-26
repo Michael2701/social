@@ -11,7 +11,7 @@ all users: email           12345678
     Functionality written in application/models/ion_auth_model.php
     function is_max_login_attempts_exceeded
 4. See all users,create new user/group : 
-    Login with admin@admin.com password and go to /auth
+    Login with admin@admin.com, password and go to /auth
 
 Possible improvements
     1. Add manage hobbies option

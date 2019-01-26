@@ -32,8 +32,7 @@ class Users extends CI_Controller
             "name"     => $this->user->first_name,
             "birthday" => $this->user->birthday,
             "hobbies"  => $hobbies,
-            "friends"  => $friends,
-            "path"     => $_SERVER['SERVER_NAME']
+            "friends"  => $friends
         ];
 
         $this->load->view("users/shared/header");

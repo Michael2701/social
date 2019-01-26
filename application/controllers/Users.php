@@ -124,7 +124,7 @@ class Users extends CI_Controller
         $query2 .= " WHERE us.id NOT IN (".implode(', ',$fr_ids).")"; 
         $query2 .= count($hobby_ids) > 0 ? " AND uh.hobby_id IN (".implode(', ',$hobby_ids).")" : ""; 
         $query2 .= " AND DATE(us.birthday + INTERVAL (YEAR(NOW()) - YEAR(us.birthday)) YEAR) ";
-        $query2 .= " BETWEEN DATE_ADD(CURDATE(), INTERVAL -5 DAY) AND DATE_ADD(CURDATE(), INTERVAL 5 DAY)";
+        $query2 .= " BETWEEN DATE_ADD(CURDATE(), INTERVAL -5 DAY) AND DATE_ADD(CURDATE(), INTERVAL 5 DAY) GROUP BY us.id";
 
 
         $res = $this->db->query($query2)->result();
